@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.brief.demo.dao.EmployeeMapper">
+
+    <resultMap type="org.brief.demo.vo.Employee" id="employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="role" property="role"/>
+        <association property="manager" column="manager" select="selectEmployeeById"/>
+    </resultMap>
+    <select id="selectEmployeeById" resultMap="employee">
+        <include refid="queryEmployee"/>
+        <where>
+            <include refid="whileId"/>
+        </where>
+    </select>
+    <select id="findEmployeeByName" resultMap="employee">
+        <include refid="queryEmployee"/>
+        <where>
+            <include refid="whileName"/>
+        </where>
+    </select>
+    <select id="findEmployee4login" resultMap="employee">
+        <include refid="queryEmployee"/>
+        <where>
+            <include refid="whileName"/>
+            <include refid="whilePasswd"/>
+        </where>
+    </select>
+    <select id="queryList" resultMap="employee">
+        <include refid="queryEmployee"/>
+        <include refid="pager"/>
+    </select>
+    <sql id="pager">
+        <if test="#{page!=null and page>0}">limit #{page},</if>
+        <if test="#{rows!=null and rows>0}">#{rows}</if>
+    </sql>
+
+    <sql id="queryEmployee">
+      select * from employee
+    </sql>
+    <sql id="whileName">
+         `name`=#{_name};
+    </sql>
+    <sql id="whilePasswd">
+         `password`=#{passwd};
+    </sql>
+    <sql id="whileId">
+         `id`=#{id};
+    </sql>
+</mapper>
